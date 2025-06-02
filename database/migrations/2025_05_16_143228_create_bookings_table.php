@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->id();
-            $table->integer('users_id');
-            $table->integer('meja_id');
-            $table->integer('paket_id');
-            $table->string('kode_booking', '7');
+            $table->increments('id');
+
+            $table->unsignedInteger('users_id');
+            $table->unsignedInteger('meja_id');
+            $table->unsignedInteger('paket_id');
+
+            $table->string('kode_booking', 7);
             $table->date('tgl_booking');
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
@@ -24,8 +26,14 @@ return new class extends Migration
             $table->integer('total_harga');
             $table->string('bukti_pembayaran');
             $table->timestamps();
+
+            // Tambahkan foreign key secara eksplisit
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('meja_id')->references('id')->on('mejas')->onDelete('cascade');
+            $table->foreign('paket_id')->references('id')->on('pakets')->onDelete('cascade');
         });
     }
+
 
     /**
      * Reverse the migrations.
