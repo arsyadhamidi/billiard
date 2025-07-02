@@ -120,8 +120,8 @@
                                                             ),
                                                             "Waktu Mulai  : {$data->waktu_mulai}",
                                                             "Waktu Selesai: {$data->waktu_selesai}",
-                                                            "Meja         : {$data->meja->nama_meja}",
-                                                            "Paket        : {$data->paket->nama_paket}",
+                                                            "Meja         : {$data->meja->no_meja}",
+                                                            "Paket        : {$data->paket->nama}",
                                                             'Total Harga  : Rp ' .
                                                             number_format($data->total_harga, 0, ',', '.'),
                                                             '',
