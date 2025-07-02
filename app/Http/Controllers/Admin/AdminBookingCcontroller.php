@@ -2,22 +2,47 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\BookingsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Meja;
 use App\Models\Paket;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminBookingCcontroller extends Controller
 {
-    public function index()
+    // In your controller
+    public function index(Request $request)
     {
-        $bookings = Booking::orderBy('id', 'desc')->get();
+        $bookings = Booking::with(['users', 'meja', 'paket']) // Eager load relationships
+            ->orderBy('id', 'desc');
+
+        if ($request->has('tgl_filter') && $request->tgl_filter) {
+            try {
+                $dates = explode(' - ', $request->tgl_filter);
+                if (count($dates) == 2) {
+                    $bookings->whereBetween('tgl_booking', [
+                        Carbon::parse($dates[0])->startOfDay(),
+                        Carbon::parse($dates[1])->endOfDay()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Handle date parse error
+            }
+        }
+
+        if ($request->has('export')) {
+            $filename = 'Laporan_Pemesanan_' . now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new BookingsExport($bookings->get()), $filename);
+        }
+
         return view('admin.booking.index', [
-            'bookings' => $bookings,
+            'bookings' => $bookings->paginate(10) // Added pagination
         ]);
     }
 
@@ -79,7 +104,7 @@ class AdminBookingCcontroller extends Controller
 
         $buktiPembayarans = null;
 
-        if($request->file('bukti_pembayaran')){
+        if ($request->file('bukti_pembayaran')) {
             $buktiPembayarans = $request->file('bukti_pembayaran')->store('bukti_pembayaran');
         }
 

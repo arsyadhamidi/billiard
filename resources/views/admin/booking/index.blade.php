@@ -19,6 +19,30 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
+                    <form action="{{ route('data-pemesanan.index') }}" method="GET">
+                        <div class="mb-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Laporan Pemesanan
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <input type="text" name="tgl_filter" class="form-control" id="searchByDate">
+                                        </div>
+                                        <div class="col-lg">
+                                            <button type="submit" name="export" class="btn btn-success" value="1" target="_blank">
+                                                <i class="fas fa-file-excel"></i>
+                                                Download Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-12">
                     <div class="mb-3">
                         <div class="card">
                             <div class="card-header">
@@ -114,8 +138,8 @@
                                                         <i class="fab fa-whatsapp"></i>
                                                     </a>
 
-                                                    <a href="{{ asset('storage/' . $data->bukti_pembayaran ?? '') }}" class="btn btn-warning me-2"
-                                                        target="_blank">
+                                                    <a href="{{ asset('storage/' . $data->bukti_pembayaran ?? '') }}"
+                                                        class="btn btn-warning me-2" target="_blank">
                                                         <i class="fas fa-download"></i>
                                                     </a>
 
@@ -140,3 +164,25 @@
         </div>
     </section>
 @endsection
+@push('custom-script')
+    <script>
+        var today = new Date();
+
+        $('#searchByDate').daterangepicker({
+            startDate: today,
+            endDate: today,
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                    'month').endOf('month')]
+            }
+        });
+    </script>
+@endpush

@@ -33,7 +33,6 @@ class PelangganPaketController extends Controller
             'tgl_booking'  => 'required|date',
             'waktu_mulai'  => 'required',
             'waktu_selesai'  => 'required',
-            'bukti_pembayaran'  => 'required|mimes:png,jpeg,jpg|max:10248',
         ], [
             'users_id.required'    => 'Pengguna wajib dipilih.',
             'users_id.exists'      => 'Pengguna yang dipilih tidak ditemukan.',
@@ -49,23 +48,13 @@ class PelangganPaketController extends Controller
 
             'waktu_mulai.required'      => 'Waktu Mulai wajib diisi.',
             'waktu_selesai.required'      => 'Waktu Selesai wajib diisi.',
-
-            'bukti_pembayaran.required'      => 'Bukti Pembayaran wajib diisi.',
-            'bukti_pembayaran.mimes'      => 'Bukti Pembayaran harus memiliki format PNG, JPG, tau JPEG.',
-            'bukti_pembayaran.max'      => 'Bukti Pembayaran maksimal 10 MB.',
         ]);
 
         $pakets = Paket::where('id', $request->paket_id)->first();
         $mejas = Meja::where('id', $request->meja_id)->first();
 
         if ($mejas->status != 1) {
-            return back()->with('error','Meja yang dipilih sedang tidak tersedia.');
-        }
-
-        $buktiPembayarans = null;
-
-        if($request->file('bukti_pembayaran')){
-            $buktiPembayarans = $request->file('bukti_pembayaran')->store('bukti_pembayaran');
+            return back()->with('error', 'Meja yang dipilih sedang tidak tersedia.');
         }
 
         // Simpan booking
@@ -79,13 +68,46 @@ class PelangganPaketController extends Controller
             'waktu_selesai' => $request->waktu_selesai,
             'status' => '1',
             'total_harga' => $pakets->harga,
-            'bukti_pembayaran' => $buktiPembayarans,
         ]);
 
         $mejas->update([
             'status' => '2',
         ]);
 
-        return back()->with('success', 'Selamat ! Anda berhasil membuat data booking!');
+        return redirect()->route('paket.show')->with('success', 'Selamat ! Anda berhasil membuat data booking!');
+    }
+
+    public function show()
+    {
+        $bookings = Booking::orderBy('id', 'desc')->first();
+        $users = Auth::user();
+        return view('landing.paket.show', [
+            'bookings' => $bookings,
+            'users' => $users,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'bukti_pembayaran'  => 'required|mimes:png,jpeg,jpg|max:10248',
+        ], [
+            'bukti_pembayaran.required'      => 'Bukti Pembayaran wajib diisi.',
+            'bukti_pembayaran.mimes'      => 'Bukti Pembayaran harus memiliki format PNG, JPG, tau JPEG.',
+            'bukti_pembayaran.max'      => 'Bukti Pembayaran maksimal 10 MB.',
+        ]);
+
+        $buktiPembayarans = null;
+
+        if($request->file('bukti_pembayaran')){
+            $buktiPembayarans = $request->file('bukti_pembayaran')->store('bukti_pembayaran');
+        }
+
+        $bookings = Booking::where('id', $id)->first();
+        $bookings->update([
+            'bukti_pembayaran' => $buktiPembayarans,
+        ]);
+
+        return redirect()->route('riwayat.index')->with('success', 'Selamat ! Anda berhasil membuat data booking!');
     }
 }

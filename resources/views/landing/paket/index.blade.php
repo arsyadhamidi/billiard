@@ -190,7 +190,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="mb-3">
+                                {{--  <div class="mb-3">
                                     <label>Bukti Pembayaran</label>
                                     <input type="file" name="bukti_pembayaran" class="form-control @error('bukti_pembayaran') is-invalid @enderror">
                                     @error('bukti_pembayaran')
@@ -198,7 +198,7 @@
                                             {{ $message }}
                                         </div>
                                     @enderror
-                                </div>
+                                </div>  --}}
 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary px-5">Pesan Sekarang</button>

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->time('waktu_selesai');
             $table->enum('status', ['1', '2', '3', '4']);
             $table->integer('total_harga');
-            $table->string('bukti_pembayaran');
+            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
 
             // Tambahkan foreign key secara eksplisit

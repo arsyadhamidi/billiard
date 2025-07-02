@@ -54,7 +54,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Paket
     Route::get('/paket/index/{id}', [PelangganPaketController::class, 'index'])->name('paket.index');
+    Route::get('/paket/show', [PelangganPaketController::class, 'show'])->name('paket.show');
     Route::post('/paket/store', [PelangganPaketController::class, 'store'])->name('paket.store');
+    Route::post('/paket/update/{id}', [PelangganPaketController::class, 'update'])->name('paket.update');
 
     // Setting
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');

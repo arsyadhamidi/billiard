@@ -27,7 +27,7 @@
                 <img src="{{ public_path('images/logo.png') }}" width="100" alt="">
             </td>
             <td style="text-align: right">
-                <h4>DATA PEMESANAN</h4>
+                <h4>BUKTI PEMESANAN</h4>
             </td>
         </tr>
         <tr>
