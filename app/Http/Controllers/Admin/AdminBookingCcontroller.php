@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use PDF;
 use App\Exports\BookingsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
@@ -19,7 +20,7 @@ class AdminBookingCcontroller extends Controller
     // In your controller
     public function index(Request $request)
     {
-        $bookings = Booking::with(['users', 'meja', 'paket']) // Eager load relationships
+        $bookings = Booking::with(['users', 'meja', 'paket'])
             ->orderBy('id', 'desc');
 
         if ($request->has('tgl_filter') && $request->tgl_filter) {
@@ -32,7 +33,7 @@ class AdminBookingCcontroller extends Controller
                     ]);
                 }
             } catch (\Exception $e) {
-                // Handle date parse error
+                // Optional: log or flash error
             }
         }
 
@@ -41,8 +42,22 @@ class AdminBookingCcontroller extends Controller
             return Excel::download(new BookingsExport($bookings->get()), $filename);
         }
 
+        if ($request->has('pdf')) {
+            $startDate = isset($dates[0]) ? Carbon::parse($dates[0]) : now();
+            $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : now();
+
+            $pdf = PDF::loadView('admin.booking.export-pdf', [
+                'bookings' => $bookings->get(),
+                'startDate' => $startDate,
+                'endDate' => $endDate
+            ])->setPaper('A4', 'portrait');
+
+            return $pdf->stream('Laporan_Pemesanan_' . now()->format('Ymd_His') . '.pdf');
+        }
+
+
         return view('admin.booking.index', [
-            'bookings' => $bookings->paginate(10) // Added pagination
+            'bookings' => $bookings->paginate(10)
         ]);
     }
 

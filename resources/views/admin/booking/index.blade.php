@@ -19,7 +19,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('data-pemesanan.index') }}" method="GET">
+                    <form action="{{ route('data-pemesanan.index') }}" method="GET" target="_blank">
                         <div class="mb-3">
                             <div class="card">
                                 <div class="card-header">
@@ -30,11 +30,23 @@
                                         <div class="col-lg-3">
                                             <input type="text" name="tgl_filter" class="form-control" id="searchByDate">
                                         </div>
-                                        <div class="col-lg">
-                                            <button type="submit" name="export" class="btn btn-success" value="1" target="_blank">
-                                                <i class="fas fa-file-excel"></i>
-                                                Download Excel
-                                            </button>
+                                        <div class="col-lg-2 text-right">
+                                            <div class="mb-3">
+                                                <button type="submit" name="export" class="btn btn-success" value="1"
+                                                    target="_blank">
+                                                    <i class="fas fa-file-excel"></i>
+                                                    Download Excel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="mb-3">
+                                                <button type="submit" name="pdf" class="btn btn-danger" value="2"
+                                                    target="_blank">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                    Download PDF
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
